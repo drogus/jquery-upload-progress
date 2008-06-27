@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+	<head>
+		<title>ajaxFileUpload</title>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+		<script src="../lib/jquery.js"></script>
+		<script src="../jquery.uploadProgress.js"></script>
+		<script type="text/javascript">
+			$(function() {
+				$('form').uploadProgress({
+					start:function(){},
+					uploading: function(upload) {$('#percents').html(upload.percents+'%');},
+					interval: 2000
+			    });
+			});
+		</script>
+		<style type="text/css">
+			.bar {
+			  width: 300px;
+			}
+			
+			#progress {
+			  background: #eee;
+			  border: 1px solid #222;
+			  margin-top: 20px;
+			}
+			#progressbar {
+			  width: 0px;
+			  height: 24px;
+			  background: #333;
+			}
+		</style>
+	</head>
+	
+	<body>  
+	  <form id="upload" enctype="multipart/form-data" action="index.html" method="post">
+        <input name="file" type="file"/>
+        <input type="submit" value="Upload"/>
+      </form>
+		
+	    <div id="uploading">
+	      <div id="progress" class="bar">
+	        <div id="progressbar">&nbsp;</div>
+	      </div>
+	    </div>
+		<div id="percents"></div>
+	</body>
+</html>
+

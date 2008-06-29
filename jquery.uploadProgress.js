@@ -19,18 +19,25 @@
 				interval: 2000,
 				progressBar: "#progressbar",
 				progressUrl: "/progress",
-				uuid: uuid,
 				start: function() {},
 				uploading: function() {},
 				complete: function() {},
                                 timer: ""
 			}, options);
+                        /* update uuid */
+                        options.uuid = uuid;
 			/* start callback */
 			options.start();
 
-			/* patch the form-action tag to include the progress-id */
-			$(this).attr("action", jQuery(this).attr("action") + "?X-Progress-ID=" + uuid);
-		
+			/* patch the form-action tag to include the progress-id 
+                           if X-Progress-ID has been already added just replace it */
+                        if(old_id = /X-Progress-ID=([^&]+)/.exec($(this).attr("action"))) {
+                          var action = $(this).attr("action").replace(old_id[1], uuid);
+                          $(this).attr("action", action);
+                        } else {
+			  $(this).attr("action", jQuery(this).attr("action") + "?X-Progress-ID=" + uuid);
+			}
+			
 			options.timer = window.setInterval(function() { $.uploadProgress(this, options) }, options.interval);
 		});
 	});

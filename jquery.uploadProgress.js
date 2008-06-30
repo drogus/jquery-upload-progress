@@ -47,6 +47,8 @@
 				start: function() {},
 				uploading: function() {},
 				complete: function() {},
+				success: function() {},
+				error: function() {},
                                 timer: ""
 			}, options);
                         /* update uuid */
@@ -86,10 +88,18 @@ jQuery.uploadProgress = function(e, options) {
               		bar.width(Math.floor(upload.percents) + '%');
 			  options.uploading(upload);
 			}
-			/* we are done, stop the interval */
-			if (upload.state == 'done') {
+			
+			if (upload.state == 'done' || upload.state == 'error') {
 				window.clearTimeout(options.timer);
 				options.complete(upload);
+			}
+			
+			if (upload.state == 'done') {
+				options.success(upload);
+			}
+			
+			if (upload.state == 'error') {
+				options.error(upload);
 			}
 		}
 	});

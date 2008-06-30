@@ -7,8 +7,33 @@
  *   http://www.opensource.org/licenses/mit-license.php
  *
  */
-
 (function($) {
+	if($.browser.safari && $('iframe[name=progressFrame]', parent.document).length == 0) {
+		$(function() {
+			iframe = document.createElement('iframe');
+			iframe.name = "progressFrame";
+			$(iframe).css({width: '0', height: '0', position: 'absolute', top: -3000});
+			document.body.appendChild(iframe);
+			
+			var d = iframe.contentWindow.document;
+			d.open();
+			/* weird - safari won't load scripts without this lines... */
+			d.write('<html><head></head><body></body></html>');
+			d.close();
+			
+			var b = d.body;
+			var s = d.createElement('script');
+			s.src = "../lib/jquery.js";
+			/* must be sure that jquery is loaded */
+			s.onload = function() {
+				var s1 = d.createElement('script');
+				s1.src = "../jquery.uploadProgress.js";
+				b.appendChild(s1);
+			}
+			b.appendChild(s);
+		});
+  	}
+
   $.fn.uploadProgress = function(options) {
 	return this.each(function(){
 		$(this).bind('submit', function() {
@@ -37,8 +62,8 @@
                         } else {
 			  $(this).attr("action", jQuery(this).attr("action") + "?X-Progress-ID=" + uuid);
 			}
-			
-			options.timer = window.setInterval(function() { $.uploadProgress(this, options) }, options.interval);
+			var uploadProgress = $.browser.safari ? progressFrame.jQuery.uploadProgress : jQuery.uploadProgress;
+			options.timer = window.setInterval(function() { uploadProgress(this, options) }, options.interval);
 		});
 	});
   };
@@ -56,7 +81,9 @@ jQuery.uploadProgress = function(e, options) {
 				upload = $.extend({
 				  percents: Math.floor((upload.received / upload.size)*1000)/10
 				}, upload);
-              $(options.progressBar).width(Math.floor(upload.percents) + '%');
+				
+			bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
+              		bar.width(Math.floor(upload.percents) + '%');
 			  options.uploading(upload);
 			}
 			/* we are done, stop the interval */

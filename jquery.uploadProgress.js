@@ -8,8 +8,13 @@
  *
  */
 (function($) {
-	if($.browser.safari && $('iframe[name=progressFrame]', parent.document).length == 0) {
-		$(function() {
+  $.fn.uploadProgress = function(options) {
+	$(function() {
+		/* tried to add iframe after submit (to not always load it) but it won't work. 
+		safari can't get scripts properly while submitting files */
+		if($.browser.safari && $('iframe[name=progressFrame]', parent.document).length == 0) {
+			/* iframe to send ajax requests in safari 
+			   thanks to Michele Finotto for idea */
 			iframe = document.createElement('iframe');
 			iframe.name = "progressFrame";
 			$(iframe).css({width: '0', height: '0', position: 'absolute', top: -3000});
@@ -23,18 +28,17 @@
 			
 			var b = d.body;
 			var s = d.createElement('script');
-			s.src = "../lib/jquery.js";
+			s.src = options.jqueryPath;
 			/* must be sure that jquery is loaded */
 			s.onload = function() {
 				var s1 = d.createElement('script');
-				s1.src = "../jquery.uploadProgress.js";
+				s1.src = options.uploadProgressPath;
 				b.appendChild(s1);
 			}
 			b.appendChild(s);
-		});
-  	}
-
-  $.fn.uploadProgress = function(options) {
+		}
+	});
+  
 	return this.each(function(){
 		$(this).bind('submit', function() {
 			var uuid = "";
@@ -49,6 +53,8 @@
 				complete: function() {},
 				success: function() {},
 				error: function() {},
+				uploadProgressPath: '/javascripts/jquery.js',
+				jqueryPath: '/javascripts/jquery.uploadProgress.js',
                                 timer: ""
 			}, options);
                         /* update uuid */

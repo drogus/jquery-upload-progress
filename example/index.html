@@ -9,6 +9,9 @@
 		<script type="text/javascript">
 			$(function() {
 				$('form').uploadProgress({
+					/* scripts locations for safari */
+					jqueryPath: "../lib/jquery.js",
+					uploadProgressPath: "../jquery.uploadProgress.js",
 					start:function(){},
 					uploading: function(upload) {$('#percents').html(upload.percents+'%');},
 					interval: 2000

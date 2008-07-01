@@ -1,0 +1,63 @@
+Usage:
+
+some html:
+     <form id="upload" enctype="multipart/form-data" action="index.html" method="post">
+        <input name="file" type="file"/>
+        <input type="submit" value="Upload"/>
+      </form>
+		
+      <div id="uploading">
+        <div id="progress" class="bar">
+          <div id="progressbar">&nbsp;</div>
+          <div id="percents"></div>
+        </div>
+      </div>
+
+then some css:
+  
+  .bar {
+    width: 300px;
+  }
+  
+  #progress {
+    background: #eee;
+    border: 1px solid #222;
+    margin-top: 20px;
+  }
+  #progressbar {
+    width: 0px;
+    height: 24px;
+    background: #333;
+  }
+
+and a bit of javascript:
+
+$(function() {
+    $('form').uploadProgress({
+		/* scripts locations for safari */
+		jqueryPath: "../lib/jquery.js",
+		uploadProgressPath: "../jquery.uploadProgress.js",
+                /* function called each time bar is updated */
+		uploading: function(upload) {$('#percents').html(upload.percents+'%');},
+		/* selector or element that will be updated */
+		progressBar: "#progressbar",
+		/* progress reports url */
+		progressUrl: "/progress",
+                /* how often will bar be updated */
+		interval: 2000
+    });
+});
+
+
+defaults:
+
+interval: 2000
+progressBar: "#progressbar"
+progressUrl: "/progress"
+start: function() {}
+uploading: function() {}
+complete: function() {}
+success: function() {}
+error: function() {}
+uploadProgressPath: '/javascripts/jquery.js'
+jqueryPath: '/javascripts/jquery.uploadProgress.js'

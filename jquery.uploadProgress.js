@@ -12,12 +12,12 @@
 	$(function() {
 		/* tried to add iframe after submit (to not always load it) but it won't work. 
 		safari can't get scripts properly while submitting files */
-		if($.browser.safari && $('iframe[name=progressFrame]', parent.document).length == 0) {
+		if($.browser.safari && top.document == document) {
 			/* iframe to send ajax requests in safari 
 			   thanks to Michele Finotto for idea */
 			iframe = document.createElement('iframe');
 			iframe.name = "progressFrame";
-			$(iframe).css({width: '0', height: '0', position: 'absolute', top: -3000});
+			$(iframe).css({width: '0', height: '0', position: 'absolute', top: '-3000px'});
 			document.body.appendChild(iframe);
 			
 			var d = iframe.contentWindow.document;
@@ -90,9 +90,9 @@ jQuery.uploadProgress = function(e, options) {
 				  percents: Math.floor((upload.received / upload.size)*1000)/10
 				}, upload);
 				
-			bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
-              		bar.width(Math.floor(upload.percents) + '%');
-			  options.uploading(upload);
+				var bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
+              			bar.width(Math.floor(upload.percents) + '%');
+			  	options.uploading(upload);
 			}
 			
 			if (upload.state == 'done' || upload.state == 'error') {

@@ -9,7 +9,27 @@
  */
 (function($) {
   $.fn.uploadProgress = function(options) {
+	options = $.extend({
+		interval: 2000,
+		progressBar: "#progressbar",
+		progressUrl: "/progress",
+		start: function() {},
+		uploading: function() {},
+		complete: function() {},
+		success: function() {},
+		error: function() {},
+		preloadImages: [],
+		uploadProgressPath: '/javascripts/jquery.uploadProgress.js',
+		jqueryPath: '/javascripts/jquery.js',
+                              timer: ""
+	}, options);
+	
 	$(function() {
+		//preload images
+		for(var i = 0; i<options.preloadImages.length; i++)
+		{
+		  options.preloadImages[i] = $("<img>").attr("src", options.preloadImages[i]);
+		}
 		/* tried to add iframe after submit (to not always load it) but it won't work. 
 		safari can't get scripts properly while submitting files */
 		if($.browser.safari && top.document == document) {
@@ -44,19 +64,6 @@
 			var uuid = "";
 			for (i = 0; i < 32; i++) { uuid += Math.floor(Math.random() * 16).toString(16); }
 			
-			options = $.extend({
-				interval: 2000,
-				progressBar: "#progressbar",
-				progressUrl: "/progress",
-				start: function() {},
-				uploading: function() {},
-				complete: function() {},
-				success: function() {},
-				error: function() {},
-				uploadProgressPath: '/javascripts/jquery.js',
-				jqueryPath: '/javascripts/jquery.uploadProgress.js',
-                                timer: ""
-			}, options);
                         /* update uuid */
                         options.uuid = uuid;
 			/* start callback */
@@ -86,12 +93,10 @@ jQuery.uploadProgress = function(e, options) {
 		},
 		success: function(upload) {
 			if (upload.state == 'uploading') {
-				upload = $.extend({
-				  percents: Math.floor((upload.received / upload.size)*1000)/10
-				}, upload);
+				upload.percents = Math.floor((upload.received / upload.size)*1000)/10;
 				
 				var bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
-              			bar.width(Math.floor(upload.percents) + '%');
+				bar.css({width: upload.percents+'%'});
 			  	options.uploading(upload);
 			}
 			

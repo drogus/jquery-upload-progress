@@ -112,6 +112,9 @@ jQuery.uploadProgress = function(e, options) {
         if (upload.state == 'error') {
           options.error(upload);
         }
+      } else {
+        // Null/false/empty response, assume we're out of process
+        options.success(upload);
       }
     }
   });

@@ -75,7 +75,9 @@
         var action = $(this).attr("action").replace(old_id[1], uuid);
         $(this).attr("action", action);
       } else {
-       $(this).attr("action", jQuery(this).attr("action") + "?X-Progress-ID=" + uuid);
+       var action = jQuery(this).attr("action");
+       var action_sep = (action.lastIndexOf("?") != -1) ? "&": "?";
+       $(this).attr("action", action + action_sep + "X-Progress-ID=" + uuid);
       }
       var uploadProgress = $.browser.safari ? progressFrame.jQuery.uploadProgress : jQuery.uploadProgress;
       options.timer = window.setInterval(function() { uploadProgress(this, options) }, options.interval);
@@ -89,25 +91,30 @@ jQuery.uploadProgress = function(e, options) {
     url: options.progressUrl + "?X-Progress-ID=" + options.uuid,
     dataType: options.dataType,
     success: function(upload) {
-      if (upload.state == 'uploading') {
-        upload.percents = Math.floor((upload.received / upload.size)*1000)/10;
+      if (upload) {
+        switch (upload.state) {
+          case 'uploading':
+            upload.percents = Math.floor((upload.received / upload.size)*1000)/10;
         
-        var bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
-        bar.css({width: upload.percents+'%'});
-        options.uploading(upload);
-      }
+            var bar = $.browser.safari ? $(options.progressBar, parent.document) : $(options.progressBar);
+            bar.css({width: upload.percents+'%'});
+            options.uploading(upload);
+            break;
       
-      if (upload.state == 'done' || upload.state == 'error') {
-        window.clearTimeout(options.timer);
-        options.complete(upload);
-      }
+        case 'done':
+          options.success(upload);
+        case 'error':
+          window.clearTimeout(options.timer);
+          options.complete(upload);
+          break;
+        }
       
-      if (upload.state == 'done') {
+        if (upload.state == 'error') {
+          options.error(upload);
+        }
+      } else {
+        // Null/false/empty response, assume we're out of process
         options.success(upload);
-      }
-      
-      if (upload.state == 'error') {
-        options.error(upload);
       }
     }
   });

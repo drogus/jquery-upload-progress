@@ -116,6 +116,11 @@ jQuery.uploadProgress = function(e, options) {
         // Null/false/empty response, assume we're out of process
         options.success(upload);
       }
+    },
+    error: function(upload) {
+      window.clearTimeout(options.timer);
+      options.complete(upload);
+      options.error(upload);
     }
   });
 };

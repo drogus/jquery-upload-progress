@@ -1,6 +1,6 @@
 It can be used with apache upload progress module, nginx upload progress module or lighttpd, read more here: http://drogomir.com/blog/2008/6/18/upload-progress-bar-with-mod_passenger-and-apache
 
-Usage:
+## Usage
 
 some html:
      <form id="upload" enctype="multipart/form-data" action="index.html" method="post">

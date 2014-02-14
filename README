@@ -7,7 +7,7 @@ some html:
         <input name="file" type="file"/>
         <input type="submit" value="Upload"/>
       </form>
-		
+
       <div id="uploading">
         <div id="progress" class="bar">
           <div id="progressbar">&nbsp;</div>
@@ -16,11 +16,11 @@ some html:
       </div>
 
 then some css:
-  
+
   .bar {
     width: 300px;
   }
-  
+
   #progress {
     background: #eee;
     border: 1px solid #222;
@@ -82,3 +82,7 @@ error: function() {}
 uploadProgressPath: '/javascripts/jquery.js'
 jqueryPath: '/javascripts/jquery.uploadProgress.js'
 dataType: 'json'
+
+## License
+
+Ruby on Rails is released under the [MIT License](http://www.opensource.org/licenses/MIT).
